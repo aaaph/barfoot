@@ -15,4 +15,4 @@ jobs:
       - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
       # NBInclude goes into the global env (stacked on LOAD_PATH), not the project
       - run: julia -e 'using Pkg; Pkg.add("NBInclude")'
-      - run: julia --project=. -e 'using NBInclude; for f in filter(endswith(".ipynb"), readdir("notebooks"; join=true)); println(f); @nbinclude(f); end'
+      - run: julia --project=. -e 'using NBInclude; for f in filter(endswith(".ipynb"), readdir("notebooks"; join=true)); println(f); @nbinclude(f; softscope=true); end'
