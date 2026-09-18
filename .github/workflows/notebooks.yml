@@ -1,0 +1,18 @@
+name: notebooks
+on: [push, pull_request]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      GKSwstype: "100" # Plots/GR without a display
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.13"
+      - uses: julia-actions/cache@v2
+      - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
+      # NBInclude goes into the global env (stacked on LOAD_PATH), not the project
+      - run: julia -e 'using Pkg; Pkg.add("NBInclude")'
+      - run: julia --project=. -e 'using NBInclude; for f in filter(endswith(".ipynb"), readdir("notebooks"; join=true)); println(f); @nbinclude(f); end'
